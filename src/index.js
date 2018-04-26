@@ -161,3 +161,6 @@ export const fn = ({ term, display }) => {
 
     
 };
+
+export const name = 'codelf';
+export const keyword = 'codelf';
