@@ -1,4 +1,5 @@
 const Preview = require('./preview');
+var isChinese = require('is-chinese');
 const { clipboard, nativeImage } = require('electron');
 import axios from 'axios';
 var lodash = require('lodash');
@@ -23,12 +24,16 @@ var async_handle_event = async function (search_content,display){
         return;
     }
     let els = {lastVal:"",valHistory:"",valRegs:[]};
-    let response = await youdao_axios.get('',{params: {q: search_content }});
-    
-    var youdao_ret = response.data;
-    console.log('type is:',typeof youdao_ret);
-    var searchcode = youdao_ret.web[0].value[0];
-    
+    let response ={};
+    if( isChinese(search_content)){
+        response = await youdao_axios.get('',{params: {q: search_content }});
+    }
+    else{
+        console.log('by english');
+        response.data = {web:[{value:[search_content]}],translation:[search_content]};
+    }
+    console.log('before get search code response data is:',response.data);
+    var searchcode = response.data.web[0].value[0];
     var tdata = response.data;
     if (tdata.basic && tdata.basic.explains) {
         els.valHistory = tdata.basic.explains.join(' ');
@@ -56,6 +61,7 @@ var async_handle_event = async function (search_content,display){
     els.lastVal.replace(/\s+/ig, '+').split('+').forEach(function (key) {
         key.length && key.length > 1 && els.valRegs.push(getKeyWordReg(key));
     });
+    els.valRegs.push(getKeyWordReg(searchcode));
     console.log('user codelf convert is:',els);
     console.log('youdao ret is:',searchcode);
     response = await searchcode_axios.get('/',{
@@ -74,6 +80,7 @@ var async_handle_event = async function (search_content,display){
 
     let found_keyword = {};
 
+    console.log('start to detect keyword');
     data.results.forEach(function (rkey) {
         //filter codes
         lineStr = [];
@@ -81,9 +88,7 @@ var async_handle_event = async function (search_content,display){
             var lstr = rkey.lines[lkey];
             //no base64
             if (!(/;base64,/g.test(lstr) && lstr.length > 256)) {
-                // console.log('lstr split is:',lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=/));
-                lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\</).forEach((value)=>{
-                    // console.log('dump split code is:',value);
+                lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\<|\\n|\#|\;|\\|\~/).forEach((value)=>{
                     if (value.length && value.length > 0) {
                         els.valRegs.forEach(function (key) {
                             if (value.match(key)) {
@@ -101,6 +106,7 @@ var async_handle_event = async function (search_content,display){
             }
         }
     });
+    console.log('found key word is:',found_keyword);
     var keyword_array_map = lodash.map(found_keyword,(value,key)=>{
         // console.log('dump value is:',value,' key is:',key);
         return {found_word:{count:value,name:key}};
