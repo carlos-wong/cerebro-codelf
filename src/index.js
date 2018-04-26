@@ -1,4 +1,5 @@
 const Preview = require('./preview');
+const { clipboard, nativeImage } = require('electron');
 import axios from 'axios';
 var lodash = require('lodash');
 
@@ -72,7 +73,7 @@ var handle_event = lodash.throttle((search_content,display)=>{
 
             var vals = [], labels = [];
 
-            let found_keyworkd = {};
+            let found_keyword = {};
 
             data.results.forEach(function (rkey) {
                 //filter codes
@@ -88,11 +89,11 @@ var handle_event = lodash.throttle((search_content,display)=>{
                                 els.valRegs.forEach(function (key) {
                                     if (value.match(key)) {
                                         let newvalue = value.trim();
-                                        if(found_keyworkd[newvalue]){
-                                            found_keyworkd[newvalue] += 1;
+                                        if(found_keyword[newvalue]){
+                                            found_keyword[newvalue] += 1;
                                         }
                                         else{
-                                            found_keyworkd[newvalue] = 1;
+                                            found_keyword[newvalue] = 1;
                                         }
                                     }
                                 });
@@ -101,7 +102,25 @@ var handle_event = lodash.throttle((search_content,display)=>{
                     }
                 }
             });
-            console.log('found keyword is:',found_keyworkd);
+            var keyword_array_map = lodash.map(found_keyword,(value,key)=>{
+                // console.log('dump value is:',value,' key is:',key);
+                return {found_word:{count:value,name:key}};
+            });
+            // console.log('keyworld array map is:',keyword_array_map);
+            var keyword_after_sort = lodash.sortBy(keyword_array_map,[(o)=>{
+                console.log('dump sort o is:',o);
+                return o.count;}]);
+            // console.log('found keyword is:',keyword_after_sort);
+            lodash.map(keyword_after_sort,(value,key)=>{
+                console.log('value is:',value);
+                let value_name = value.found_word.name;
+                display({
+                    title: value_name,
+                    onSelect:()=>{
+                        clipboard.writeText(value_name);
+                    }
+                });
+            });
 
         }) 
         .catch(function (error) {
