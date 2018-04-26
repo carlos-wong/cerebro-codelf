@@ -964,13 +964,13 @@ cerebro-scripts@0.0.25:
     url-loader "^0.5.7"
     webpack "2.5.1"
 
-cerebro-tools@0.1.8:
+cerebro-tools@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/cerebro-tools/-/cerebro-tools-0.1.8.tgz#876e5eff7ab036fdbcee283bdfa2939e989d6314"
   dependencies:
     memoizee "^0.4.1"
 
-cerebro-ui@0.0.16:
+cerebro-ui@^0.0.16:
   version "0.0.16"
   resolved "https://registry.yarnpkg.com/cerebro-ui/-/cerebro-ui-0.0.16.tgz#55695c26862ebd9a9e44646feb0b475c208d010e"
   dependencies:
