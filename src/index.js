@@ -60,7 +60,7 @@ var handle_event = lodash.throttle((search_content,display)=>{
                 params:{
                     q:searchcode,
                     p:0,
-                    per_page:16,
+                    per_page:90,
                 }
             });
         })
@@ -71,6 +71,9 @@ var handle_event = lodash.throttle((search_content,display)=>{
             let lineStr = [];
 
             var vals = [], labels = [];
+
+            let found_keyworkd = {};
+
             data.results.forEach(function (rkey) {
                 //filter codes
                 lineStr = [];
@@ -79,13 +82,18 @@ var handle_event = lodash.throttle((search_content,display)=>{
                     //no base64
                     if (!(/;base64,/g.test(lstr) && lstr.length > 256)) {
                         // console.log('lstr split is:',lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=/));
-                        lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}/).forEach((value)=>{
+                        lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\</).forEach((value)=>{
                             // console.log('dump split code is:',value);
                             if (value.length && value.length > 0) {
                                 els.valRegs.forEach(function (key) {
                                     if (value.match(key)) {
-                                        // value = value.replace(/^(\-|\/)*/, '').replace(/(\-|\/)*$/, '');
-                                        console.log('lstr match key after replace is:',value.trim());
+                                        let newvalue = value.trim();
+                                        if(found_keyworkd[newvalue]){
+                                            found_keyworkd[newvalue] += 1;
+                                        }
+                                        else{
+                                            found_keyworkd[newvalue] = 1;
+                                        }
                                     }
                                 });
                             }
@@ -93,6 +101,7 @@ var handle_event = lodash.throttle((search_content,display)=>{
                     }
                 }
             });
+            console.log('found keyword is:',found_keyworkd);
 
         }) 
         .catch(function (error) {
