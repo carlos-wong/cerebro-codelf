@@ -61,9 +61,9 @@ var async_handle_event = async function (search_content,display){
     els.lastVal.replace(/\s+/ig, '+').split('+').forEach(function (key) {
         key.length && key.length > 1 && els.valRegs.push(getKeyWordReg(key));
     });
-    els.valRegs.push(getKeyWordReg(searchcode));
+    els.valRegs.push(getKeyWordReg(searchcode.replace(/\ /ig, '*').toLowerCase()));
     console.log('user codelf convert is:',els);
-    console.log('youdao ret is:',searchcode);
+    console.log('try to search code ret is:',searchcode);
     response = await searchcode_axios.get('/',{
         params:{
             q:searchcode,
