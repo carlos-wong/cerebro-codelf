@@ -89,7 +89,7 @@ var async_handle_event = async function (search_content,display){
             var lstr = rkey.lines[lkey];
             //no base64
             if (!(/;base64,/g.test(lstr) && lstr.length > 256)) {
-                lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\<|\\n|\#|\;|\\|\~/).forEach((value)=>{
+                lstr.split(/[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\<|\\n|\#|\;|\\|\~|\`/).forEach((value)=>{
                     if (value.length && value.length > 0) {
                         els.valRegs.forEach(function (key) {
                             if (value.match(key)) {
