@@ -32,8 +32,9 @@ var async_handle_event = async function (search_content,display){
         console.log('by english');
         response.data = {web:[{value:[search_content]}],translation:[search_content]};
     }
-    console.log('before get search code response data is:',response.data);
-    var searchcode = response.data.web[0].value[0];
+    // console.log('before get search code response data is:',response.data);
+    // console.log('before get search code response data translation is:',response.data.translation[0]);
+    var searchcode = ((response.data && response.data.web && response.data.web[0]) && response.data.web[0].value && response.data.web[0].value[0]) || (response.data.translation && response.data.translation[0] ) || "";
     var tdata = response.data;
     if (tdata.basic && tdata.basic.explains) {
         els.valHistory = tdata.basic.explains.join(' ');
