@@ -2,21 +2,21 @@
 
 > There are only two hard things in Computer Science: cache invalidation and naming things. -- Phil Karlton
 
-> 给变量起名的事情上，为你生命省 **3s**。
+> 给变量起名的事情上，为你生命省 **3s**。
 
-**[Cerebro](https://github.com/KELiON/cerebro.git) 变量名搜索插件**，项目灵感来源 [codelf](https://unbug.github.io/codelf/)。通过 Cerebro 的搜索窗口快速查找变量名。
+**[Cerebro](https://github.com/KELiON/cerebro.git) 变量名搜索插件**，项目灵感来源 [codelf](https://unbug.github.io/codelf/)。通过 Cerebro 的搜索窗口快速查找变量名。
 
-## 特性
+## 特性
 
 - 快速启动、搜索
 - 中英文搜索
-- 自由定制
+- 自由定制
 
 ![](./res/screenshot.png)
 
 ## 安装
 
-- 插件依赖于 [Cerebro](https://github.com/KELiON/cerebro.git)
+- 插件依赖于 [Cerebro](https://github.com/KELiON/cerebro.git)
 - `Ctrl-Space` 打开 Cerebro
 - 输入 `plugins codelf`，点击安装
 
