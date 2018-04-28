@@ -1,6 +1,6 @@
 {
   "name": "cerebro-codelf",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "dependencies": {
     "axios": "^0.18.0",
     "cerebro-tools": "^0.1.8",
@@ -9,7 +9,6 @@
     "lodash": "^4.17.10"
   },
   "repository": "carlos-wong/cerebro-codelf",
-
   "author": {
     "name": "carlos",
     "email": "huaixian.huang@gmail.com",
@@ -17,7 +16,6 @@
   },
   "license": "MIT",
   "description": "Cerebro plugin codelf style",
-
   "devDependencies": {
     "cerebro-scripts": "0.0.25"
   },
