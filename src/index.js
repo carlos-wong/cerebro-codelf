@@ -81,7 +81,6 @@ var async_handle_event = async function (search_content,display){
 
     let found_keyword = {};
 
-    console.log('start to detect keyword');
     data.results.forEach(function (rkey) {
         //filter codes
         lineStr = [];

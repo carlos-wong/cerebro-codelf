@@ -1,6 +1,6 @@
 {
   "name": "cerebro-codelf",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "dependencies": {
     "axios": "^0.18.0",
     "cerebro-tools": "^0.1.8",
