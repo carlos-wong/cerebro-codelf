@@ -3,6 +3,8 @@ var isChinese = require('is-chinese');
 const { clipboard, nativeImage } = require('electron');
 import axios from 'axios';
 var lodash = require('lodash');
+var log = require('loglevel');
+log.setLevel('debug');
 
 var getKeyWordReg = function (key) {
     return new RegExp('([\\-_\\w\\d\\/\\$]{0,}){0,1}' + key + '([\\-_\\w\\d\\$]{0,}){0,1}', 'gi');
@@ -125,25 +127,8 @@ export const fn = ({ term, display }) => {
     if(split_contents[0] == 'codelf'){
         var search_contents = lodash.slice(split_contents,1);
         handle_event(search_contents.join(" "),display);
-        // searchcode_axios.get('/?q=array',{
-        //     params:{
-        //         q:'array',
-        //         p:0,
-        //         per_page:16,
-        //     }
-        // })
-        // .then((response)=>{
-        //     display({
-        //         title: "hicarlos",
-        //         getPreview: () => {return response.data;}
-        //     });
-        // })
-        // .catch((response)=>{
-        // }) ;
+        log.debug('handle codelf event carlos');
     }
-    
-
-    
 };
 
 export const name = 'codelf';

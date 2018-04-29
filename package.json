@@ -6,7 +6,8 @@
     "cerebro-tools": "^0.1.8",
     "cerebro-ui": "^0.0.16",
     "is-chinese": "^1.2.5",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "loglevel": "^1.6.1"
   },
   "repository": "carlos-wong/cerebro-codelf",
   "author": {
