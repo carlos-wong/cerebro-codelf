@@ -1,5 +1,9 @@
 # cerebro-codelf
 
+![](https://img.shields.io/github/license/mashape/apistatus.svg)
+
+[English version README](README_EN.md)
+
 > There are only two hard things in Computer Science: cache invalidation and naming things. -- Phil Karlton
 
 > 给变量起名的事情上，为你生命省 **3s**。
