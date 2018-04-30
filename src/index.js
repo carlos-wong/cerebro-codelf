@@ -4,7 +4,7 @@ const { clipboard, nativeImage } = require('electron');
 import axios from 'axios';
 var lodash = require('lodash');
 var log = require('loglevel');
-log.setLevel('debug');
+log.setLevel('silent');
 
 var getKeyWordReg = function (key) {
     return new RegExp('([\\-_\\w\\d\\/\\$]{0,}){0,1}' + key + '([\\-_\\w\\d\\$]{0,}){0,1}', 'gi');
@@ -20,9 +20,12 @@ var searchcode_axios = axios.create({
     timeout: 10000,
 });
 
-var async_handle_event = async function (search_content,display){
+var async_handle_event = async function (search_content,display,hide){
+    log.debug('start to fetch data');
     
     if (!search_content || search_content.length <=0) {
+        log.debug('hide fetch item');
+        hide('codelffetch');
         return;
     }
     let els = {lastVal:"",valHistory:"",valRegs:[]};
@@ -107,8 +110,14 @@ var async_handle_event = async function (search_content,display){
     });
     var keyword_after_sort = lodash.sortBy(keyword_array_map,[(o)=>{
         return o.count;}]);
-    lodash.map(keyword_after_sort,(value,key)=>{
+    log.debug('remove codelfftch item');
+    var try_remove_fetching_item = true;
+    lodash.map(lodash.slice(keyword_after_sort,0,10),(value,key)=>{
         let value_name = value.found_word.name;
+        if (try_remove_fetching_item) {
+            try_remove_fetching_item = false;
+            hide('codelffetch');
+        }
         display({
             title: value_name,
             onSelect:()=>{
@@ -119,15 +128,22 @@ var async_handle_event = async function (search_content,display){
     return;
 }
 
-var handle_event = lodash.throttle((search_content,display)=>{async_handle_event(search_content,display);},3000);
+var handle_event = lodash.throttle((search_content,display,hide)=>{async_handle_event(search_content,display,hide);},
+                                   3000,{ 'trailing': true });
 
-export const fn = ({ term, display }) => {
+export const fn = ({ term, display,hide }) => {
     // Put your plugin code here
     var split_contents = term.split(" ");
     if(split_contents[0] == 'codelf'){
         var search_contents = lodash.slice(split_contents,1);
-        handle_event(search_contents.join(" "),display);
-        log.debug('handle codelf event carlos');
+        if(search_contents[0] && search_contents[0].length > 0){
+            log.debug('debug search content is:',search_contents[0]);
+            display({
+                title: "codelf fetch...",
+                id:'codelffetch'
+            });
+            handle_event(search_contents.join(" "),display,hide);
+        }
     }
 };
 
