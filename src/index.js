@@ -56,20 +56,24 @@ async function query_youdao(q, display) {
     doctype: "json",
     version: "1.1"
   });
-  let r = await fetch(`${youdaoapi_url}?${query}`);
+  try {
+    let r = await fetch(`${youdaoapi_url}?${query}`);
 
-  let translated = await r.json();
+    let translated = await r.json();
 
-  if (translated.l === youdao_zh_2_en) {
-    let explains = translated.basic.explains;
-    let webExplains = translated.web;
+    if (translated.l === youdao_zh_2_en) {
+      let explains = translated.basic.explains;
+      let webExplains = translated.web;
 
-    let ret = show_basic_explain(explains, display);
-    ret = _.uniq(_.concat(ret, show_web_explain(webExplains, display)));
-    log.debug("query ret is:", ret);
-    return ret;
+      let ret = show_basic_explain(explains, display);
+      ret = _.uniq(_.concat(ret, show_web_explain(webExplains, display)));
+      log.debug("query ret is:", ret);
+      return ret;
+    }
+  } catch (err) {
+  } finally {
+    return [];
   }
-  return [];
 }
 function show_basic_explain(explains, display) {
   if (explains && explains.length > 0) {
@@ -109,6 +113,9 @@ function show_web_explain(webExplains, display) {
 var async_handle_event = async function(search_content, display, hide) {
   log.debug("start to fetch data");
   let translated = await query_youdao(search_content);
+  if (translated.length <= 0) {
+    translated[0] = search_content;
+  }
   log.debug("translated is:", translated);
   if (!search_content || search_content.length <= 0) {
     log.debug("hide fetch item");
@@ -117,47 +124,61 @@ var async_handle_event = async function(search_content, display, hide) {
   }
   let els = { lastVal: "", valHistory: "", valRegs: [] };
   let response = {};
-  if (isChinese(search_content)) {
-    response = await youdao_axios.get("", { params: { q: search_content } });
-  } else {
-    response.data = {
-      web: [{ value: [search_content] }],
-      translation: [search_content]
-    };
-  }
-  var searchcode =
-    (response.data &&
-      response.data.web &&
-      response.data.web[0] &&
-      response.data.web[0].value &&
-      response.data.web[0].value[0]) ||
-    (response.data.translation && response.data.translation[0]) ||
-    "";
+  // if (isChinese(search_content)) {
+  //   response = await youdao_axios.get("", { params: { q: search_content } });
+  // } else {
+  //   response.data = {
+  //     web: [{ value: [search_content] }],
+  //     translation: [search_content]
+  //   };
+  // }
+  // var searchcode =
+  //   (response.data &&
+  //     response.data.web &&
+  //     response.data.web[0] &&
+  //     response.data.web[0].value &&
+  //     response.data.web[0].value[0]) ||
+  //   (response.data.translation && response.data.translation[0]) ||
+  //   "";
   var tdata = response.data;
-  if (tdata.basic && tdata.basic.explains) {
-    els.valHistory = tdata.basic.explains.join(" ");
-  }
-  //web translate
-  if (tdata.web && tdata.web) {
-    tdata.web.forEach(function(key) {
-      els.valHistory += " " + key.value.join(" ");
-    });
-  }
-  if (tdata && tdata.translation) {
-    els.lastVal =
-      els.lastVal +
+  // if (tdata.basic && tdata.basic.explains) {
+  //   els.valHistory = tdata.basic.explains.join(" ");
+  // }
+  // els.valHistory = translated[0].join(" ");
+  // //web translate
+  // if (tdata.web && tdata.web) {
+  //   tdata.web.forEach(function(key) {
+  //     els.valHistory += " " + key.value.join(" ");
+  //   });
+  // }
+  translated.forEach((value, index) => {
+    log.debug("create els value from translated is:", value);
+    els.valHistory +=
       " " +
-      tdata.translation
-        .join(" ")
+      value
+        // .join(" ")
         .replace(/[!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/g, "")
         .split(" ")
         .filter(function(key, idx, inputArray) {
           return inputArray.indexOf(key) == idx && !/^(a|an|the)$/gi.test(key);
-        })
-        .join(" ");
-  } else {
-  }
-  els.lastVal = els.lastVal.trim();
+        });
+  });
+  log.debug("els valHistory is:", els.valHistory);
+  // if (tdata && tdata.translation) {
+  //   els.lastVal =
+  //     els.lastVal +
+  //     " " +
+  //     tdata.translation
+  //       .join(" ")
+  //       .replace(/[!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/g, "")
+  //       .split(" ")
+  //       .filter(function(key, idx, inputArray) {
+  //         return inputArray.indexOf(key) == idx && !/^(a|an|the)$/gi.test(key);
+  //       })
+  //       .join(" ");
+  // } else {
+  // }
+  els.lastVal = translated[0].trim();
   els.lastVal = els.lastVal
     .split(" ")
     .filter(function(key, idx, inputArray) {
@@ -171,76 +192,88 @@ var async_handle_event = async function(search_content, display, hide) {
     .forEach(function(key) {
       key.length && key.length > 1 && els.valRegs.push(getKeyWordReg(key));
     });
-  els.valRegs.push(
-    getKeyWordReg(searchcode.replace(/\ /gi, "*").toLowerCase())
-  );
-  response = await searchcode_axios.get("/", {
-    params: {
-      q: searchcode,
-      p: 0,
-      per_page: 90
-    }
+  translated.forEach((key, index) => {
+    key.length && key.length > 1 && els.valRegs.push(getKeyWordReg(key));
   });
+  // els.valRegs.push(
+  //   getKeyWordReg(searchcode.replace(/\ /gi, "*").toLowerCase())
+  // );
 
-  let data = response.data;
-  let lineStr = [];
-
-  var vals = [],
-    labels = [];
-
-  let found_keyword = {};
-
-  data.results.forEach(function(rkey) {
-    //filter codes
-    lineStr = [];
-    for (var lkey in rkey.lines) {
-      var lstr = rkey.lines[lkey];
-      //no base64
-      if (!(/;base64,/g.test(lstr) && lstr.length > 256)) {
-        lstr
-          .split(
-            /[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\<|\\n|\#|\;|\\|\~|\`/
-          )
-          .forEach(value => {
-            if (value.length && value.length > 0) {
-              els.valRegs.forEach(function(key) {
-                if (value.match(key)) {
-                  let newvalue = value.trim();
-                  if (found_keyword[newvalue]) {
-                    found_keyword[newvalue] += 1;
-                  } else {
-                    found_keyword[newvalue] = 1;
-                  }
-                }
-              });
-            }
-          });
-      }
-    }
-  });
-  var keyword_array_map = lodash.map(found_keyword, (value, key) => {
-    return { found_word: { count: value, name: key } };
-  });
-  var keyword_after_sort = lodash.sortBy(keyword_array_map, [
-    o => {
-      return o.count;
-    }
-  ]);
-  log.debug("remove codelfftch item");
-  var try_remove_fetching_item = true;
-  lodash.map(lodash.slice(keyword_after_sort, 0, 10), (value, key) => {
-    let value_name = value.found_word.name;
-    if (try_remove_fetching_item) {
-      try_remove_fetching_item = false;
-      hide("codelffetch");
-    }
-    display({
-      title: value_name,
-      onSelect: () => {
-        clipboard.writeText(value_name);
+  let results = [];
+  let search_end = [];
+  translated.forEach(async (value, index, list) => {
+    log.debug("search code value:", value, " list:", list);
+    response = await searchcode_axios.get("/", {
+      params: {
+        q: value,
+        p: 0,
+        per_page: 90
       }
     });
+    results = _.concat(results, response.data.results);
+    search_end = _.concat(search_end, [value]);
+    if (search_end.length >= list.length) {
+      log.debug("search end");
+      let lineStr = [];
+      var vals = [],
+        labels = [];
+
+      let found_keyword = {};
+      log.debug("result count is:", results.length);
+      log.debug("value regs is:", els.valRegs);
+      results.forEach(function(rkey) {
+        //filter codes
+        lineStr = [];
+        for (var lkey in rkey.lines) {
+          var lstr = rkey.lines[lkey];
+          //no base64
+          if (!(/;base64,/g.test(lstr) && lstr.length > 256)) {
+            lstr
+              .split(
+                /[\-|\/|\ |\(|\)|\>|\,|\[|\]|\*|\&]|\=|\"|\:|\.|\'|\$|\{|\}|\<|\\n|\#|\;|\\|\~|\`/
+              )
+              .forEach(value => {
+                if (value.length && value.length > 0) {
+                  els.valRegs.forEach(function(key) {
+                    if (value.match(key)) {
+                      let newvalue = value.trim();
+                      if (found_keyword[newvalue]) {
+                        found_keyword[newvalue] += 1;
+                      } else {
+                        found_keyword[newvalue] = 1;
+                      }
+                    }
+                  });
+                }
+              });
+          }
+        }
+      });
+      var keyword_array_map = lodash.map(found_keyword, (value, key) => {
+        return { found_word: { count: value, name: key } };
+      });
+      var keyword_after_sort = lodash.sortBy(keyword_array_map, [
+        o => {
+          return o.count;
+        }
+      ]);
+      var try_remove_fetching_item = true;
+      lodash.map(lodash.slice(keyword_after_sort, 0, 10), (value, key) => {
+        let value_name = value.found_word.name;
+        if (try_remove_fetching_item) {
+          try_remove_fetching_item = false;
+          hide("codelffetch");
+        }
+        display({
+          title: value_name,
+          onSelect: () => {
+            clipboard.writeText(value_name);
+          }
+        });
+      });
+    }
   });
+
   return;
 };
 
