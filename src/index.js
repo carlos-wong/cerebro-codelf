@@ -244,11 +244,11 @@ var async_handle_event = async function(search_content, display, hide) {
   return;
 };
 
-var handle_event = lodash.throttle(
+var handle_event = _.debounce(
   (search_content, display, hide) => {
     async_handle_event(search_content, display, hide);
   },
-  3000,
+  1600,
   { trailing: true }
 );
 
@@ -258,7 +258,7 @@ export const fn = ({ term, display, hide }) => {
   if (split_contents[0] == "codelf") {
     var search_contents = lodash.slice(split_contents, 1);
     if (search_contents[0] && search_contents[0].length > 0) {
-      log.debug("debug search content is:", search_contents[0]);
+      // log.debug("debug search content is:", search_contents[0]);
       display({
         title: "codelf fetch...",
         id: "codelffetch"
