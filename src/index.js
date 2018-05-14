@@ -266,7 +266,7 @@ var async_handle_event = async function(search_content, display, hide) {
           hide("codelffetch");
         }
         display({
-          title: value_name + "found:" + value.found_word.count,
+          title: value_name + " [Matched:" + value.found_word.count + "]",
           onSelect: () => {
             clipboard.writeText(value_name);
           }
