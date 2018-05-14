@@ -254,11 +254,13 @@ var async_handle_event = async function(search_content, display, hide) {
       });
       var keyword_after_sort = lodash.sortBy(keyword_array_map, [
         o => {
-          return o.count;
+          log.debug("dump o is:", o);
+          return 0 - o.found_word.count;
         }
       ]);
+      log.debug("keyword after sort is:", keyword_after_sort);
       var try_remove_fetching_item = true;
-      lodash.map(lodash.slice(keyword_after_sort, 0, 10), (value, key) => {
+      lodash.map(lodash.slice(keyword_after_sort, 0, 20), (value, key) => {
         log.debug("dump value is:", value);
         let value_name = value.found_word.name;
         if (try_remove_fetching_item) {
