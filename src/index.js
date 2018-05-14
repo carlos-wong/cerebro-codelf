@@ -259,13 +259,14 @@ var async_handle_event = async function(search_content, display, hide) {
       ]);
       var try_remove_fetching_item = true;
       lodash.map(lodash.slice(keyword_after_sort, 0, 10), (value, key) => {
+        log.debug("dump value is:", value);
         let value_name = value.found_word.name;
         if (try_remove_fetching_item) {
           try_remove_fetching_item = false;
           hide("codelffetch");
         }
         display({
-          title: value_name,
+          title: value_name + "found:" + value.found_word.count,
           onSelect: () => {
             clipboard.writeText(value_name);
           }
