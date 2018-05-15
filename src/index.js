@@ -221,6 +221,8 @@ var async_handle_event = async function(search_content, display, hide) {
       let found_keyword = {};
       log.debug("result count is:", results.length);
       log.debug("value regs is:", els.valRegs);
+      log.debug("search code results is:", results);
+      let debug_result = results[0].lines;
       results.forEach(function(rkey) {
         //filter codes
         lineStr = [];
@@ -265,6 +267,7 @@ var async_handle_event = async function(search_content, display, hide) {
           try_remove_fetching_item = false;
           hide("codelffetch");
         }
+        log.debug("dump debug lines is:", debug_result);
         display({
           title: value_name + " [Matched:" + value.found_word.count + "]",
           onSelect: () => {
