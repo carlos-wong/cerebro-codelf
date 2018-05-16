@@ -327,6 +327,7 @@ var async_handle_event = async function(
                   getPreview: () => <Preview {...searchcode} />,
                   onSelect: event => {
                     log.debug("value is:", value);
+                    clipboard.writeText(value_name);
                     actions.open(value.url);
                   }
                 });
