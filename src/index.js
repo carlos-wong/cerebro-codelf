@@ -323,7 +323,9 @@ var async_handle_event = async function(
 
                 display({
                   id: title,
-                  title: value.url,
+                  title: value.repo
+                    .replace("https://", "")
+                    .replace("http://", ""),
                   getPreview: () => <Preview {...searchcode} />,
                   onSelect: event => {
                     log.debug("value is:", value);
