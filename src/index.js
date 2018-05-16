@@ -320,6 +320,7 @@ var async_handle_event = async function(
                 let lines = { lines: value };
                 let searchcode = value;
                 log.debug("value lines is:", lines);
+                searchcode.actions = actions;
 
                 display({
                   id: title,

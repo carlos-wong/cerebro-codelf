@@ -42,11 +42,13 @@ export default class Preview extends Component {
     this.state = {
       code: "Loading",
       fetched: false,
-      lastId: 0
+      lastId: 0,
+      Loading: true
     };
   }
   render() {
-    const { lines, language, id } = this.props;
+    const { lines, language, id, url, actions } = this.props;
+    log.debug("actions is:", actions);
     var codeString = "\n";
     let targetLanguage = _.lowerCase(language);
     if (targetLanguage === "c") {
@@ -57,6 +59,10 @@ export default class Preview extends Component {
     // searchcode_result_axios
     log.debug("get preview state is:", this.state);
     if (id !== this.state.lastId) {
+      this.setState({
+        code: "Loading",
+        lastId: id
+      });
       searchcode_result_axios.get(id + "/").then(response => {
         log.debug("response data md5 is:", md5(response.data.code));
         this.setState({
@@ -66,12 +72,20 @@ export default class Preview extends Component {
         });
       });
     }
-
+    log.debug("debug actions open is:", actions.open);
     return (
       <Element style={{ width: "100%", height: "100%" }}>
         <div style={{ width: "100%" }}>
-          <div style={{ height: "10px" }} />
-          <h2>{"hicarlos"}</h2>
+          <div style={{ height: "6px" }} />
+          <a
+            herf={url}
+            onClick={() => {
+              log.debug("click url:" + url);
+              actions.open(url);
+            }}
+          >
+            {url}
+          </a>
           <div
             style={{
               width: "100%",
@@ -92,5 +106,7 @@ export default class Preview extends Component {
 Preview.propTypes = {
   lines: PropTypes.array,
   language: PropTypes.string,
-  id: PropTypes.number
+  id: PropTypes.number,
+  url: PropTypes.string,
+  actions: PropTypes.object
 };
