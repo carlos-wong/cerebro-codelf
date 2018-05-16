@@ -112,7 +112,12 @@ function show_web_explain(webExplains, display) {
   return ret;
 }
 
-var async_handle_event = async function(search_content, display, hide) {
+var async_handle_event = async function(
+  search_content,
+  display,
+  hide,
+  actions
+) {
   log.debug("start to fetch data");
   let translated = await query_youdao(search_content);
   if (translated.length <= 0) {
@@ -319,7 +324,11 @@ var async_handle_event = async function(search_content, display, hide) {
                 display({
                   id: title,
                   title: value.url,
-                  getPreview: () => <Preview {...searchcode} />
+                  getPreview: () => <Preview {...searchcode} />,
+                  onSelect: event => {
+                    log.debug("value is:", value);
+                    actions.open(value.url);
+                  }
                 });
               });
             }
@@ -336,14 +345,14 @@ var async_handle_event = async function(search_content, display, hide) {
 };
 
 var handle_event = _.debounce(
-  (search_content, display, hide) => {
-    async_handle_event(search_content, display, hide);
+  (search_content, display, hide, actions) => {
+    async_handle_event(search_content, display, hide, actions);
   },
   1600,
   { trailing: true }
 );
 
-export const fn = ({ term, display, hide }) => {
+export const fn = ({ term, display, hide, actions }) => {
   // Put your plugin code here
   var split_contents = term.split(" ");
   if (split_contents[0] == "codelf") {
@@ -355,7 +364,7 @@ export const fn = ({ term, display, hide }) => {
         id: "codelffetch"
       });
       showing_display = [];
-      handle_event(search_contents.join(" "), display, hide);
+      handle_event(search_contents.join(" "), display, hide, actions);
     }
   }
 };

@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 // import SyntaxHighlighter from "react-syntax-highlighter";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import virtualizedRenderer from "react-syntax-highlighter-virtualized-renderer";
+const md5 = require("md5");
+var Scroll = require("react-scroll");
+var Link = Scroll.Link;
+var DirectLink = Scroll.DirectLink;
+var Element = Scroll.Element;
+var Events = Scroll.Events;
+var scroll = Scroll.animateScroll;
+var scrollSpy = Scroll.scrollSpy;
 
 import { docco } from "react-syntax-highlighter/styles/hljs";
 import { atomDark } from "react-syntax-highlighter/styles/prism";
@@ -33,39 +40,51 @@ export default class Preview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: "Loading"
+      code: "Loading",
+      fetched: false,
+      lastId: 0
     };
   }
   render() {
     const { lines, language, id } = this.props;
     var codeString = "\n";
-    let newlanguage = _.lowerCase(language);
-    if (newlanguage === "c") {
-      newlanguage = "cpp";
+    let targetLanguage = _.lowerCase(language);
+    if (targetLanguage === "c") {
+      targetLanguage = "cpp";
     }
-    log.debug("language is:", language);
+    log.debug("language is:", targetLanguage, " id is:", id);
     const tmpCodeString = "(num) => num + 1";
     // searchcode_result_axios
-    searchcode_result_axios.get(id + "/").then(response => {
-      log.debug("response is:", response.data.code);
-      this.setState({
-        code: response.data.code
+    log.debug("get preview state is:", this.state);
+    if (id !== this.state.lastId) {
+      searchcode_result_axios.get(id + "/").then(response => {
+        log.debug("response data md5 is:", md5(response.data.code));
+        this.setState({
+          code: response.data.code,
+          fetched: true,
+          lastId: id
+        });
       });
-    });
+    }
+
     return (
-      <div style={{ width: "100%" }}>
-        <h2>{"hicarlos"}</h2>
-        <div
-          style={{
-            width: "100%",
-            flex: 1
-          }}
-        >
-          <SyntaxHighlighter language={"javascript"} style={docco}>
-            {this.state.code}
-          </SyntaxHighlighter>
+      <Element style={{ width: "100%", height: "100%" }}>
+        <div style={{ width: "100%" }}>
+          <div style={{ height: "10px" }} />
+          <h2>{"hicarlos"}</h2>
+          <div
+            style={{
+              width: "100%",
+              flex: 1
+            }}
+          >
+            <SyntaxHighlighter language={targetLanguage} style={docco}>
+              {this.state.code}
+            </SyntaxHighlighter>
+          </div>
+          <div style={{ height: "10px" }} />
         </div>
-      </div>
+      </Element>
     );
   }
 }
