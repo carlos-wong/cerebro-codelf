@@ -1,4 +1,3 @@
-const Preview = require("./preview");
 var isChinese = require("is-chinese");
 const { clipboard, nativeImage } = require("electron");
 import axios from "axios";
@@ -9,6 +8,7 @@ const qs = require("querystring");
 const md5 = require("md5");
 const youdao_zh_2_en = "zh-CHS2EN";
 let isDev = require("isdev");
+const Preview = require("./Preview.jsx").default;
 
 console.log("isDev:", isDev);
 
@@ -26,6 +26,8 @@ var getKeyWordReg = function(key) {
     "gi"
   );
 };
+
+var showing_display = [];
 
 const youdaoapi_url = "http://openapi.youdao.com/api";
 
@@ -267,11 +269,32 @@ var async_handle_event = async function(search_content, display, hide) {
           try_remove_fetching_item = false;
           hide("codelffetch");
         }
-        log.debug("dump debug lines is:", debug_result);
+
+        let lines = { lines: debug_result };
+        let display_id = "id-" + value_name;
+        showing_display.push(display_id);
         display({
-          title: value_name + " [Matched:" + value.found_word.count + "]",
-          onSelect: () => {
+          id: display_id,
+          title: " [" + value.found_word.count + "] " + value_name,
+          onSelect: event => {
+            log.debug("on select event is:", event);
             clipboard.writeText(value_name);
+          },
+          getPreview: () => <Preview {...lines} />,
+          onKeyDown: event => {
+            let innerEvent = _.clone(event);
+            event.preventDefault();
+            log.debug("innerEvent is:", innerEvent);
+            if (innerEvent.keyCode === 9) {
+              log.debug("tab is down");
+              log.debug("showing display push is:", showing_display);
+              showing_display.forEach((value, index) => {
+                hide(value);
+              });
+            }
+            // let innerEvent = _.cloneDeep(event);
+            // log.debug("debug key event code is:", innerEvent);
+            // event.preventDefault();
           }
         });
       });
@@ -300,6 +323,7 @@ export const fn = ({ term, display, hide }) => {
         title: "codelf fetch...",
         id: "codelffetch"
       });
+      showing_display = [];
       handle_event(search_contents.join(" "), display, hide);
     }
   }

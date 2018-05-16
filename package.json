@@ -10,7 +10,8 @@
     "lodash": "^4.17.10",
     "loglevel": "^1.6.1",
     "md5": "^2.2.1",
-    "querystring": "^0.2.0"
+    "querystring": "^0.2.0",
+    "react-syntax-highlighter": "^7.0.4"
   },
   "repository": "carlos-wong/cerebro-codelf",
   "author": {
