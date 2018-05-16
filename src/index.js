@@ -221,6 +221,7 @@ var async_handle_event = async function(search_content, display, hide) {
         labels = [];
 
       let found_keyword = {};
+      let resultByKeyword = {};
       log.debug("result count is:", results.length);
       log.debug("value regs is:", els.valRegs);
       log.debug("search code results is:", results);
@@ -241,6 +242,20 @@ var async_handle_event = async function(search_content, display, hide) {
                   els.valRegs.forEach(function(key) {
                     if (value.match(key)) {
                       let newvalue = value.trim();
+                      log.debug(
+                        "debug cal the frequency of match word:",
+                        found_keyword[newvalue],
+                        " new value:",
+                        newvalue
+                      );
+                      if (!resultByKeyword[newvalue]) {
+                        resultByKeyword[newvalue] = [];
+                      }
+                      resultByKeyword[newvalue].push(rkey);
+                      resultByKeyword[newvalue] = _.uniq(
+                        resultByKeyword[newvalue]
+                      );
+                      log.debug("resutl by keyword is:", resultByKeyword);
                       if (found_keyword[newvalue]) {
                         found_keyword[newvalue] += 1;
                       } else {
@@ -280,16 +295,32 @@ var async_handle_event = async function(search_content, display, hide) {
             log.debug("on select event is:", event);
             clipboard.writeText(value_name);
           },
-          getPreview: () => <Preview {...lines} />,
+
           onKeyDown: event => {
             let innerEvent = _.clone(event);
-            event.preventDefault();
             log.debug("innerEvent is:", innerEvent);
             if (innerEvent.keyCode === 9) {
+              event.preventDefault();
               log.debug("tab is down");
               log.debug("showing display push is:", showing_display);
               showing_display.forEach((value, index) => {
                 hide(value);
+              });
+              let keyword_projects = resultByKeyword[value_name];
+              showing_display = [];
+              log.debug("keyword projects is:", keyword_projects);
+              keyword_projects.forEach(value => {
+                let title = "project-" + value.repo;
+                showing_display.push(title);
+                let lines = { lines: value };
+                let searchcode = value;
+                log.debug("value lines is:", lines);
+
+                display({
+                  id: title,
+                  title: value.url,
+                  getPreview: () => <Preview {...searchcode} />
+                });
               });
             }
             // let innerEvent = _.cloneDeep(event);
