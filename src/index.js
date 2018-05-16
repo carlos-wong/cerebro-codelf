@@ -8,6 +8,7 @@ const qs = require("querystring");
 const md5 = require("md5");
 const youdao_zh_2_en = "zh-CHS2EN";
 process.env.NODE_ENV = "production";
+// process.env.NODE_ENV = "dev";
 
 let isDev = require("isdev");
 const Preview = require("./Preview.jsx").default;
@@ -118,9 +119,14 @@ var async_handle_event = async function(
   search_content,
   display,
   hide,
-  actions
+  actions,
+  update
 ) {
   log.debug("start to fetch data");
+  update("codelffetch", {
+    title: "codelf query youdao ...",
+    id: "codelffetch"
+  });
   let translated = await query_youdao(search_content);
   if (translated.length <= 0) {
     translated[0] = search_content;
@@ -210,6 +216,10 @@ var async_handle_event = async function(
 
   let results = [];
   let search_end = [];
+  update("codelffetch", {
+    title: "codelf query searchcode ...",
+    id: "codelffetch"
+  });
   translated.forEach(async (value, index, list) => {
     log.debug("search code value:", value, " list:", list);
     response = await searchcode_axios.get("/", {
@@ -223,6 +233,10 @@ var async_handle_event = async function(
     search_end = _.concat(search_end, [value]);
     if (search_end.length >= list.length) {
       log.debug("search end");
+      update("codelffetch", {
+        title: "codelf parsing searchcode return...",
+        id: "codelffetch"
+      });
       let lineStr = [];
       var vals = [],
         labels = [];
@@ -351,14 +365,14 @@ var async_handle_event = async function(
 };
 
 var handle_event = _.debounce(
-  (search_content, display, hide, actions) => {
-    async_handle_event(search_content, display, hide, actions);
+  (search_content, display, hide, actions, update) => {
+    async_handle_event(search_content, display, hide, actions, update);
   },
   1600,
   { trailing: true }
 );
 
-export const fn = ({ term, display, hide, actions }) => {
+export const fn = ({ term, display, hide, actions, update }) => {
   // Put your plugin code here
   var split_contents = term.split(" ");
   if (split_contents[0] == "codelf") {
@@ -366,11 +380,11 @@ export const fn = ({ term, display, hide, actions }) => {
     if (search_contents[0] && search_contents[0].length > 0) {
       // log.debug("debug search content is:", search_contents[0]);
       display({
-        title: "codelf fetch...",
+        title: "codelf working...",
         id: "codelffetch"
       });
       showing_display = [];
-      handle_event(search_contents.join(" "), display, hide, actions);
+      handle_event(search_contents.join(" "), display, hide, actions, update);
     }
   }
 };
