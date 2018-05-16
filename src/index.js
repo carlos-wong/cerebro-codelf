@@ -7,6 +7,8 @@ var log = require("loglevel");
 const qs = require("querystring");
 const md5 = require("md5");
 const youdao_zh_2_en = "zh-CHS2EN";
+process.env.NODE_ENV = "production";
+
 let isDev = require("isdev");
 const Preview = require("./Preview.jsx").default;
 

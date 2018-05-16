@@ -17,6 +17,18 @@ import { atomDark } from "react-syntax-highlighter/styles/prism";
 var log = require("loglevel");
 const _ = require("lodash");
 import axios from "axios";
+let isDev = require("isdev");
+
+console.log("preview isDev:", isDev);
+
+if (isDev) {
+  log.setLevel("debug");
+  log.debug("in Development");
+} else {
+  log.setLevel("silent");
+  console.log("Not in Development!");
+}
+
 var searchcode_result_axios = axios.create({
   baseURL: "https://searchcode.com/api/result/",
   timeout: 10000
