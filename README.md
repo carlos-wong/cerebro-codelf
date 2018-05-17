@@ -1,6 +1,6 @@
 # cerebro-codelf
 
-![](https://img.shields.io/github/license/mashape/apistatus.svg)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 [English version README](README_EN.md)
 
@@ -16,9 +16,11 @@
 - 中英文搜索
 - 自由定制
 
-![](./res/screenshot.gif)
+![screenshot](./res/screenshot.gif)
 
 ## 安装
+
+兼容环境：Windows, MacOS, Linux
 
 - 插件依赖于 [Cerebro](https://github.com/KELiON/cerebro.git)
 - `Ctrl-Space` 打开 Cerebro

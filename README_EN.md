@@ -1,6 +1,6 @@
 # cerebro-codelf
 
-![](https://img.shields.io/github/license/mashape/apistatus.svg)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 [中文版 README](README.md)
 
@@ -16,9 +16,11 @@ Cerebro-codelf is a plugin of [Cerebro](https://github.com/KELiON/cerebro.git) t
 - Support both Chinese and English
 - Free customization
 
-![](./res/screenshot.gif)
+![screenshot](./res/screenshot.gif)
 
 ## Install
+
+**Platform**: Windows, MacOS, Linux
 
 - Cerebro-codelf depends on [Cerebro](https://github.com/KELiON/cerebro.git)
 - Press `Ctrl-Space` to open Cerebro
