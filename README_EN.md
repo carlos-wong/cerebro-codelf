@@ -16,7 +16,7 @@ Cerebro-codelf is a plugin of [Cerebro](https://github.com/KELiON/cerebro.git) t
 - Support both Chinese and English
 - Free customization
 
-![](./res/screenshot.png)
+![](./res/screenshot.gif)
 
 ## Install
 

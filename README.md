@@ -16,7 +16,7 @@
 - 中英文搜索
 - 自由定制
 
-![](./res/screenshot.png)
+![](./res/screenshot.gif)
 
 ## 安装
 
