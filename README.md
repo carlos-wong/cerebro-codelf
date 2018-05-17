@@ -1,6 +1,7 @@
 # cerebro-codelf
 
-![license](https://img.shields.io/github/license/mashape/apistatus.svg)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg) ![download](https://img.shields.io/npm/dt/cerebro-codelf.svg) ![version](https://img.shields.io/npm/v/cerebro-codelf.svg)
+
 
 [English version README](README_EN.md)
 
@@ -13,7 +14,7 @@
 ## 特性
 
 - 快速启动、搜索
-- 中英文搜索
+- 中英文变量搜索
 - 自由定制
 
 ![screenshot](./res/screenshot.gif)
