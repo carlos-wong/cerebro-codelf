@@ -1,6 +1,6 @@
 # cerebro-codelf
 
-![license](https://img.shields.io/github/license/mashape/apistatus.svg) ![download](https://img.shields.io/npm/dt/cerebro-codelf.svg) ![version](https://img.shields.io/npm/v/cerebro-codelf.svg)![language](https://img.shields.io/badge/language-JavaScript-green.svg)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg) ![download](https://img.shields.io/npm/dt/cerebro-codelf.svg) ![version](https://img.shields.io/npm/v/cerebro-codelf.svg) ![language](https://img.shields.io/badge/language-JavaScript-green.svg)
 
 
 [English version README](README_EN.md)
