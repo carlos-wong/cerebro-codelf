@@ -2,6 +2,7 @@
 
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg) ![download](https://img.shields.io/npm/dt/cerebro-codelf.svg) ![version](https://img.shields.io/npm/v/cerebro-codelf.svg) ![language](https://img.shields.io/badge/language-JavaScript-green.svg)
 
+暂时失效，是因为 https://searchcode.com/ 源站出现问题，正在观察是否修复 :故障:
 
 [English version README](README_EN.md)
 
