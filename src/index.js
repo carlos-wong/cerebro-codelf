@@ -34,15 +34,10 @@ var showing_display = [];
 
 const youdaoapi_url = "http://openapi.youdao.com/api";
 
-var youdao_axios = axios.create({
-  baseURL:
-    "http://fanyi.youdao.com/openapi.do?callback=?&keyfrom=Codelf&key=2023743559&type=data&doctype=json&version=1.1",
-  timeout: 10000
-});
 
 var searchcode_axios = axios.create({
   baseURL: "https://searchcode.com/api/codesearch_I/",
-  timeout: 10000
+  timeout: 60000
 });
 
 async function query_youdao(q, display) {
